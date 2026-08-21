@@ -1,9 +1,17 @@
-SKILL-LOADING RULE: Before ANY GitHub/Git operation in a Codespace, ALWAYS load skill `github-codespace` first. This includes: git push, gh pr create, gh run watch, API calls, PR reviews, CI monitoring, auth setup. The skill covers the full workflow (auth -> push -> CI -> PR -> merge). Skipping it causes wasted turns re-deriving known patterns (token extraction from /proc/PID/environ, credential helpers, gh run watch). Also load `codespace-gh-auth` alongside when the immediate task is auth-only.
+User prefers concise practical responses, working artifacts over descriptions, honesty with caveats. Dislikes fabricated output - report blockers honestly.
 §
-WIKI-SKILL SYNC RULE: When updating a skill in `.devcontainer/skills/`, always check if any wiki article in `.devcontainer/wiki/` references the same topic and needs a corresponding update (or cross-reference). User explicitly asked: "check whether the change in this skill deserve some changes in some LM wiki that we have stored." Wiki = reference knowledge; skill = procedural. They should stay in sync on the same topic.
+CI/CD workflow: PR-to-main + merge gate; content-only changes (skills/**, *.sh, memories/**) → lint-check only (30s); infrastructure changes (boot scripts, devcontainer.json, workflows) → full build (15min). Must run ci-lint-check locally before pushing.
 §
-CI path-filter (user-validated): .devcontainer/memories/** and .devcontainer/skills/** = CONTENT -> 30s lint-check only. Only boot scripts/devcontainer.json/workflows = infrastructure -> full-build. Never move markdown content into infrastructure. Self-check Persistence = 9a+9b only.
+Merge gate: Must check GitHub CodeQL and Copilot review suggestions via github-pr-review skill before merging. Present findings for approval. No auto-merge.
 §
-Mnemon persistence: fresh Codespace spawns re-seed from .devcontainer/mnemon/seed.json (imported by start-hermes.sh every spawn). The LIVE Mnemon DB is ephemeral and does NOT survive a rebuild. To persist a memory/skill across spawns, write a seed.json entry, not just mnemon_remember. Validate: `mnemon import --dry-run .devcontainer/mnemon/seed.json` -> 'validation passed'.
+Memory: Uses Mnemon (mnemon_remember/recall) as primary provider. Insights must be merged into .devcontainer/mnemon/seed.json for cross-spawn persistence. Validate with mnemon import --dry-run. Never edit .devcontainer/memories/USER.md or MEMORY.md without asking first.
 §
-When building/committing a skill in a Codespace, also export it to Mnemon memory for future fresh spawns: update .devcontainer/mnemon/seed.json AND commit a standalone seed-extract JSON (e.g. seed-<skill>.json) into the same PR. User wants the agent to PROPOSE the entry for review before committing (collaborative sign-off, not blind auto-commit).
+Wiki vs Skill distinction: Wiki = reference knowledge (.devcontainer/wiki/), Skill = procedural (.devcontainer/skills/). They should stay in sync on same topic. Wiki naming convention: use 'wiki' not 'knowledge'.
+§
+Coding discipline: Karpathy guidelines - minimal surgical changes, think before coding, no drive-by refactoring, no speculative abstractions. Verify with real command output, not assertions.
+§
+Repo hygiene: Rejects vendoring heavy third-party skills with their CI/workflow noise. Prefers live install via one-shot installer and Hermes discovery from ~/.hermes/skills. Only persist user's own small config files + idempotent boot guards.
+§
+Naming: 'Pi-agent' (not 'PyAgent'). Version pinning for all tools (NODE_VERSION, OMNIROUTE_VERSION, PI_AGENT_VERSION, etc.) matching existing patterns in post-create-cmd.sh.
+§
+Infra invariants must be auto-verified in CI, not just documented. Proposals iterated in Lavish, not MD files. Self-check.sh validates symlinks (memories + skills) with 3-case guard logic.

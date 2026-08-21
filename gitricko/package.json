@@ -1,0 +1,39 @@
+{
+  "name": "pi-failover",
+  "version": "0.1.0",
+  "description": "True Hermes-style request-time model failover for Pi — transparently drop to a fallback provider/model on timeout/error, before Pi exhausts its own retries.",
+  "main": "index.ts",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/<you>/pi-failover"
+  },
+  "homepage": "https://github.com/<you>/pi-failover#readme",
+  "bugs": "https://github.com/<you>/pi-failover/issues",
+  "license": "MIT",
+  "keywords": [
+    "pi-extension",
+    "pi-package",
+    "pi",
+    "model-failover",
+    "fallback",
+    "high-availability",
+    "hermes"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "peerDependencies": {
+    "@earendil-works/pi-coding-agent": ">=0.84.0",
+    "@earendil-works/pi-tui": ">=0.84.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.4.0"
+  },
+  "pi": {
+    "extensions": ["./index.ts"]
+  },
+  "scripts": {
+    "test": "tsx test/run.ts",
+    "typecheck": "tsc --noEmit"
+  }
+}
